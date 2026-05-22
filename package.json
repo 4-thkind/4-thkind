@@ -1,0 +1,15 @@
+{
+  "name": "spiderman-gif-generator",
+  "version": "1.0.0",
+  "description": "Records Spiderman contribution animation as GIF",
+  "scripts": {
+    "inject": "node scripts/inject_real_data.js",
+    "record": "node scripts/record.js",
+    "generate": "node scripts/inject_real_data.js && node scripts/record.js"
+  },
+  "dependencies": {
+    "puppeteer": "^21.0.0",
+    "gifencoder": "^2.0.1",
+    "canvas": "^2.11.2"
+  }
+}

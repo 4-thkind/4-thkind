@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spiderman Graph - Longer Appearance</title>
+<style>
+  body { margin: 0; background: #0d1117; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px; font-family: monospace; }
+  p { color: #768390; font-size: 13px; margin-bottom: 14px; }
+  canvas { border-radius: 6px; max-width: 100%; display: block; }
+  .footer { color: #30363d; font-size: 11px; margin-top: 10px; }
+</style>
+<base target="_blank">
+</head>
+<body>
+<p>🕷️ 4-thkind's contribution graph</p>
+<canvas id="c" width="1288" height="282"></canvas>
+<p class="footer">github.com/4-thkind</p>
+
+<script>
+// ── Constants ─────────────────────────────────────────────────────────────
+const CELL=20, STEP=24, ROWS=7, COLS=52, PX=3;
+const GRID_X=40, GRID_Y=90;
+const CVW=GRID_X*2+COLS*STEP, CVH=GRID_Y+ROWS*STEP+24;
+
+// ── Grid generation ───────────────────────────────────────────────────────
+let s=42;
+const rng=()=>{s=(s*1664525+1013904223)&0xffffffff; return (s>>>0)/0xffffffff;};
+const W=[0,0,0,0,1,1,1,3,3,6,6,10,10,10];
+const GRID=[];
+for(let w=0; w<COLS; w++){ GRID.push([]); for(let d=0; d<ROWS; d++) GRID[w].push(W[Math.floor(rng()*W.length)]); }
+
+function cellColor(n){ if(n===0) return "#161b22"; if(n<=3) return "#0e4429"; if(n<=6) return "#006d32"; if(n<=9) return "#26a641"; return "#39d353"; }
+function isGreen(c,r){ return c>=0 && c<COLS && r>=0 && r<ROWS && GRID[c][r]>0; }
+function findTop(c){ for(let r=0; r<ROWS; r++) if(isGreen(c,r)) return r; return 0; }
+function findBot(c){ for(let r=ROWS-1; r>=0; r--) if(isGreen(c,r)) return r; return ROWS-1; }
+function findRand(c){ const g=[]; for(let r=0; r<ROWS; r++) if(isGreen(c,r)) g.push(r); return g.length ? g[Math.floor(Math.random()*g.length)] : 3; }
+function cx(c){ return GRID_X + c*STEP + CELL/2; }
+function cy(r){ return GRID_Y + r*STEP + CELL/2; }
+function cty(r){ return GRID_Y + r*STEP; }
+
+// ── HANGING SPIDERMAN (13×22) ──────────────────────────────────────────────
+const SPR_HANG=[[2,0,"#aa1111"],[3,0,"#aa1111"],[4,0,"#aa1111"],[5,0,"#aa1111"],[2,1,"#aa1111"],[3,1,"#cc1111"],[4,1,"#cc1111"],[5,1,"#aa1111"],[6,1,"#881111"],[2,2,"#aa1111"],[3,2,"#cc1111"],[4,2,"#aa1111"],[5,2,"#aa1111"],[6,2,"#aa1111"],[7,2,"#aa1111"],[8,2,"#aa1111"],[9,2,"#aa1111"],[10,2,"#aa1111"],[3,3,"#0d1a7a"],[4,3,"#0d1a7a"],[5,3,"#aa1111"],[6,3,"#aa1111"],[7,3,"#cc1111"],[8,3,"#cc1111"],[9,3,"#cc1111"],[10,3,"#cc1111"],[11,3,"#aa1111"],[12,3,"#881111"],[3,4,"#0d1a7a"],[4,4,"#0d1a7a"],[5,4,"#cc1111"],[6,4,"#aa1111"],[7,4,"#aa1111"],[8,4,"#cc1111"],[9,4,"#cc1111"],[10,4,"#cc1111"],[11,4,"#cc1111"],[12,4,"#aa1111"],[4,5,"#cc1111"],[5,5,"#aa1111"],[6,5,"#ffffff"],[7,5,"#ffffff"],[8,5,"#ffffff"],[9,5,"#aa1111"],[10,5,"#cc1111"],[11,5,"#aa1111"],[12,5,"#aa1111"],[4,6,"#cc1111"],[5,6,"#aa1111"],[6,6,"#ffffff"],[7,6,"#ffffff"],[8,6,"#ffffff"],[9,6,"#ffffff"],[10,6,"#aa1111"],[11,6,"#ffffff"],[12,6,"#ffffff"],[5,7,"#cc1111"],[6,7,"#cc1111"],[7,7,"#ffffff"],[8,7,"#ffffff"],[9,7,"#ffffff"],[10,7,"#ffffff"],[11,7,"#ffffff"],[12,7,"#ffffff"],[5,8,"#aa1111"],[6,8,"#aa1111"],[7,8,"#cc1111"],[8,8,"#aa1111"],[9,8,"#aa1111"],[10,8,"#cc1111"],[11,8,"#aa1111"],[5,9,"#aa1111"],[6,9,"#aa1111"],[7,9,"#aa1111"],[8,9,"#cc1111"],[9,9,"#cc1111"],[10,9,"#cc1111"],[11,9,"#aa1111"],[12,9,"#aa1111"],[2,10,"#0d1a7a"],[3,10,"#0d1a7a"],[4,10,"#0d1a7a"],[5,10,"#aa1111"],[6,10,"#cc1111"],[7,10,"#aa1111"],[8,10,"#aa1111"],[9,10,"#881111"],[10,10,"#aa1111"],[11,10,"#cc1111"],[12,10,"#cc1111"],[1,11,"#0d1a7a"],[2,11,"#0d1a7a"],[3,11,"#0d1a7a"],[4,11,"#0d1a7a"],[5,11,"#aa1111"],[6,11,"#cc1111"],[7,11,"#aa1111"],[8,11,"#cc1111"],[9,11,"#aa1111"],[10,11,"#cc1111"],[11,11,"#cc1111"],[12,11,"#aa1111"],[1,12,"#0d1a7a"],[2,12,"#0d1a7a"],[3,12,"#0d1a7a"],[4,12,"#0d1a7a"],[5,12,"#0d1a7a"],[6,12,"#aa1111"],[7,12,"#aa1111"],[8,12,"#aa1111"],[9,12,"#cc1111"],[10,12,"#cc1111"],[11,12,"#aa1111"],[12,12,"#aa1111"],[0,13,"#aa1111"],[1,13,"#aa1111"],[2,13,"#aa1111"],[3,13,"#0d1a7a"],[4,13,"#0d1a7a"],[6,13,"#aa1111"],[7,13,"#aa1111"],[8,13,"#cc1111"],[9,13,"#cc1111"],[10,13,"#aa1111"],[0,14,"#aa1111"],[1,14,"#cc1111"],[2,14,"#cc1111"],[3,14,"#aa1111"],[6,14,"#aa1111"],[7,14,"#cc1111"],[8,14,"#cc1111"],[9,14,"#aa1111"],[10,14,"#0d1a7a"],[0,15,"#aa1111"],[1,15,"#aa1111"],[2,15,"#aa1111"],[3,15,"#aa1111"],[6,15,"#aa1111"],[7,15,"#aa1111"],[8,15,"#aa1111"],[9,15,"#0d1a7a"],[7,16,"#0d1a7a"],[8,16,"#0d1a7a"],[9,16,"#0d1a7a"],[6,17,"#aa1111"],[7,17,"#0d1a7a"],[8,17,"#0d1a7a"],[9,17,"#0d1a7a"],[4,18,"#aa1111"],[5,18,"#aa1111"],[6,18,"#aa1111"],[7,18,"#0d1a7a"],[8,18,"#0d1a7a"],[3,19,"#aa1111"],[4,19,"#cc1111"],[5,19,"#cc1111"],[6,19,"#cc1111"],[7,19,"#aa1111"],[3,20,"#aa1111"],[4,20,"#cc1111"],[5,20,"#cc1111"],[6,20,"#cc1111"],[7,20,"#aa1111"],[3,21,"#aa1111"],[4,21,"#aa1111"],[5,21,"#aa1111"],[6,21,"#aa1111"]];
+const HW=13, HH=22;
+
+// ── SWINGING SPIDERMAN (24×17) ────────────────────────────────────────────
+const SPR_SWING=[[8,0,"#aa1111"],[9,0,"#aa1111"],[10,0,"#aa1111"],[11,0,"#aa1111"],[12,0,"#aa1111"],[13,0,"#aa1111"],[14,0,"#aa1111"],[17,0,"#aa1111"],[18,0,"#aa1111"],[19,0,"#aa1111"],[20,0,"#aa1111"],[8,1,"#aa1111"],[9,1,"#aa1111"],[10,1,"#aa1111"],[11,1,"#aa1111"],[12,1,"#aa1111"],[13,1,"#aa1111"],[14,1,"#aa1111"],[15,1,"#aa1111"],[17,1,"#aa1111"],[18,1,"#aa1111"],[19,1,"#aa1111"],[20,1,"#aa1111"],[7,2,"#aa1111"],[8,2,"#aa1111"],[9,2,"#aa1111"],[10,2,"#aa1111"],[11,2,"#aa1111"],[12,2,"#aa1111"],[13,2,"#aa1111"],[14,2,"#aa1111"],[15,2,"#aa1111"],[16,2,"#555555"],[17,2,"#555555"],[18,2,"#aa1111"],[19,2,"#aa1111"],[20,2,"#aa1111"],[7,3,"#aa1111"],[8,3,"#aa1111"],[9,3,"#ffffff"],[10,3,"#ffffff"],[11,3,"#ffffff"],[12,3,"#aa1111"],[13,3,"#aa1111"],[14,3,"#ffffff"],[15,3,"#ffffff"],[16,3,"#555555"],[17,3,"#555555"],[18,3,"#555555"],[19,3,"#aa1111"],[7,4,"#aa1111"],[8,4,"#aa1111"],[9,4,"#ffffff"],[10,4,"#ffffff"],[11,4,"#ffffff"],[12,4,"#ffffff"],[13,4,"#ffffff"],[14,4,"#ffffff"],[15,4,"#ffffff"],[16,4,"#aa1111"],[17,4,"#aa1111"],[18,4,"#555555"],[19,4,"#555555"],[1,5,"#aa1111"],[2,5,"#aa1111"],[8,5,"#aa1111"],[9,5,"#aa1111"],[10,5,"#ffffff"],[11,5,"#ffffff"],[12,5,"#aa1111"],[13,5,"#aa1111"],[14,5,"#ffffff"],[15,5,"#ffffff"],[16,5,"#aa1111"],[17,5,"#0d1a7a"],[0,6,"#aa1111"],[1,6,"#aa1111"],[2,6,"#aa1111"],[3,6,"#555555"],[4,6,"#555555"],[5,6,"#aa1111"],[6,6,"#aa1111"],[7,6,"#aa1111"],[8,6,"#aa1111"],[9,6,"#aa1111"],[10,6,"#aa1111"],[11,6,"#aa1111"],[12,6,"#aa1111"],[13,6,"#aa1111"],[14,6,"#aa1111"],[15,6,"#0d1a7a"],[16,6,"#0d1a7a"],[20,6,"#aa1111"],[21,6,"#aa1111"],[22,6,"#aa1111"],[0,7,"#aa1111"],[1,7,"#aa1111"],[2,7,"#aa1111"],[3,7,"#cc1111"],[4,7,"#555555"],[5,7,"#aa1111"],[6,7,"#aa1111"],[7,7,"#aa1111"],[8,7,"#aa1111"],[9,7,"#aa1111"],[10,7,"#aa1111"],[11,7,"#aa1111"],[12,7,"#aa1111"],[13,7,"#aa1111"],[14,7,"#0d1a7a"],[15,7,"#0d1a7a"],[20,7,"#aa1111"],[21,7,"#aa1111"],[22,7,"#aa1111"],[23,7,"#aa1111"],[0,8,"#aa1111"],[1,8,"#aa1111"],[2,8,"#aa1111"],[3,8,"#555555"],[4,8,"#0d1a7a"],[5,8,"#0d1a7a"],[6,8,"#0d1a7a"],[7,8,"#0d1a7a"],[8,8,"#aa1111"],[9,8,"#aa1111"],[10,8,"#aa1111"],[11,8,"#aa1111"],[12,8,"#aa1111"],[13,8,"#aa1111"],[14,8,"#0d1a7a"],[15,8,"#0d1a7a"],[16,8,"#0d1a7a"],[17,8,"#0d1a7a"],[18,8,"#0d1a7a"],[20,8,"#aa1111"],[21,8,"#aa1111"],[22,8,"#aa1111"],[23,8,"#aa1111"],[7,9,"#0d1a7a"],[8,9,"#0d1a7a"],[9,9,"#aa1111"],[10,9,"#aa1111"],[11,9,"#aa1111"],[12,9,"#aa1111"],[13,9,"#aa1111"],[14,9,"#aa1111"],[15,9,"#0d1a7a"],[16,9,"#0d1a7a"],[17,9,"#0d1a7a"],[18,9,"#0d1a7a"],[19,9,"#aa1111"],[20,9,"#aa1111"],[21,9,"#aa1111"],[22,9,"#aa1111"],[23,9,"#aa1111"],[8,10,"#0d1a7a"],[9,10,"#0d1a7a"],[10,10,"#aa1111"],[11,10,"#aa1111"],[12,10,"#aa1111"],[13,10,"#aa1111"],[14,10,"#0d1a7a"],[15,10,"#0d1a7a"],[16,10,"#0d1a7a"],[17,10,"#0d1a7a"],[18,10,"#0d1a7a"],[19,10,"#0d1a7a"],[20,10,"#aa1111"],[21,10,"#aa1111"],[22,10,"#aa1111"],[23,10,"#aa1111"],[8,11,"#0d1a7a"],[9,11,"#0d1a7a"],[10,11,"#aa1111"],[11,11,"#aa1111"],[12,11,"#aa1111"],[13,11,"#aa1111"],[14,11,"#0d1a7a"],[15,11,"#0d1a7a"],[16,11,"#0d1a7a"],[17,11,"#0d1a7a"],[18,11,"#0d1a7a"],[19,11,"#0d1a7a"],[20,11,"#aa1111"],[21,11,"#aa1111"],[22,11,"#aa1111"],[23,11,"#aa1111"],[9,12,"#aa1111"],[10,12,"#aa1111"],[11,12,"#aa1111"],[12,12,"#aa1111"],[13,12,"#aa1111"],[14,12,"#0d1a7a"],[15,12,"#0d1a7a"],[16,12,"#0d1a7a"],[17,12,"#0d1a7a"],[12,13,"#aa1111"],[13,13,"#aa1111"],[14,13,"#aa1111"],[15,13,"#0d1a7a"],[16,13,"#0d1a7a"],[12,14,"#aa1111"],[13,14,"#aa1111"],[14,14,"#aa1111"],[15,14,"#aa1111"],[12,15,"#881111"],[13,15,"#aa1111"],[14,15,"#aa1111"],[15,15,"#aa1111"],[13,16,"#aa1111"],[14,16,"#aa1111"],[15,16,"#aa1111"]];
+const SWW=24;
+
+// ── Goblin sprite (unchanged) ─────────────────────────────────────────────
+const SPR_GOBLIN=[[6,0,"#404020"],[7,0,"#404040"],[8,0,"#404040"],[9,0,"#404040"],[10,0,"#404040"],[11,0,"#404040"],[12,0,"#404040"],[13,0,"#404040"],[14,0,"#404040"],[15,0,"#404040"],[18,0,"#c0c0c0"],[19,0,"#c0c0c0"],[20,0,"#c06020"],[21,0,"#c0c0c0"],[3,1,"#204020"],[7,1,"#404020"],[8,1,"#404020"],[9,1,"#404040"],[10,1,"#404020"],[11,1,"#404020"],[12,1,"#404040"],[13,1,"#404020"],[14,1,"#404040"],[15,1,"#404020"],[19,1,"#c06020"],[20,1,"#00ff00"],[21,1,"#c06020"],[2,2,"#406020"],[3,2,"#204020"],[4,2,"#406020"],[7,2,"#406020"],[8,2,"#406020"],[9,2,"#404020"],[10,2,"#406020"],[11,2,"#406020"],[12,2,"#404020"],[13,2,"#404020"],[14,2,"#406020"],[15,2,"#406020"],[18,2,"#c0c0c0"],[19,2,"#ff6020"],[20,2,"#c06020"],[21,2,"#ff6020"],[2,3,"#406020"],[3,3,"#204020"],[4,3,"#406020"],[5,3,"#406020"],[6,3,"#204020"],[7,3,"#204020"],[8,3,"#406020"],[9,3,"#406020"],[10,3,"#406020"],[11,3,"#ffc000"],[12,3,"#ffc000"],[13,3,"#406020"],[14,3,"#ffc000"],[15,3,"#c0a000"],[17,3,"#c0c0c0"],[18,3,"#c0c0c0"],[19,3,"#c0c0c0"],[21,3,"#c0c0c0"],[2,4,"#204020"],[3,4,"#406020"],[4,4,"#204020"],[5,4,"#204020"],[6,4,"#406020"],[7,4,"#204020"],[8,4,"#406020"],[9,4,"#204020"],[10,4,"#406020"],[11,4,"#406020"],[12,4,"#406020"],[13,4,"#406020"],[14,4,"#406020"],[15,4,"#406020"],[2,5,"#204020"],[3,5,"#204020"],[4,5,"#204020"],[5,5,"#204020"],[6,5,"#204020"],[7,5,"#204020"],[8,5,"#406020"],[9,5,"#204020"],[10,5,"#406020"],[11,5,"#c0c0c0"],[12,5,"#c0c0c0"],[13,5,"#c0c0c0"],[14,5,"#c0c0c0"],[15,5,"#406020"],[16,5,"#406020"],[7,6,"#204020"],[8,6,"#204020"],[9,6,"#204020"],[10,6,"#204020"],[11,6,"#406020"],[12,6,"#406020"],[13,6,"#406020"],[14,6,"#204020"],[15,6,"#204020"],[16,6,"#406020"],[17,6,"#406020"],[1,7,"#c0c0c0"],[2,7,"#c0c0c0"],[8,7,"#406020"],[9,7,"#406020"],[10,7,"#204020"],[11,7,"#204020"],[12,7,"#406020"],[14,7,"#204020"],[15,7,"#204020"],[16,7,"#204020"],[17,7,"#406020"],[0,8,"#c0c0c0"],[1,8,"#c0c0c0"],[8,8,"#204020"],[9,8,"#406020"],[10,8,"#406020"],[11,8,"#406020"],[12,8,"#406020"],[13,8,"#406020"],[14,8,"#406020"],[15,8,"#406020"],[16,8,"#204020"],[17,8,"#204020"],[21,8,"#ff6020"],[0,9,"#ff6020"],[8,9,"#406020"],[9,9,"#204020"],[10,9,"#204020"],[11,9,"#406020"],[12,9,"#406020"],[13,9,"#406020"],[14,9,"#406020"],[15,9,"#406020"],[16,9,"#204020"],[21,9,"#c06020"],[0,10,"#ff6020"],[7,10,"#406020"],[8,10,"#406020"],[9,10,"#204020"],[10,10,"#204020"],[11,10,"#406020"],[12,10,"#204020"],[13,10,"#406020"],[14,10,"#406020"],[15,10,"#406020"],[16,10,"#406020"],[21,10,"#ff6020"],[0,11,"#c0c0c0"],[1,11,"#c0c0c0"],[7,11,"#204020"],[8,11,"#204020"],[9,11,"#204020"],[10,11,"#204020"],[13,11,"#204020"],[14,11,"#204020"],[15,11,"#204020"],[16,11,"#406020"],[17,11,"#406020"],[1,12,"#c0c0c0"],[2,12,"#c0c0c0"],[7,12,"#204020"],[8,12,"#406020"],[9,12,"#204020"],[14,12,"#204020"],[15,12,"#204020"],[16,12,"#204020"],[17,12,"#406020"],[18,12,"#406020"],[19,12,"#406020"],[5,13,"#406020"],[6,13,"#406020"],[7,13,"#406020"],[8,13,"#406020"],[9,13,"#406020"],[10,13,"#406020"],[15,13,"#406020"],[16,13,"#406020"],[17,13,"#406020"],[18,13,"#406020"],[19,13,"#406020"],[20,13,"#406020"],[2,14,"#800080"],[3,14,"#800080"],[4,14,"#808080"],[5,14,"#808080"],[6,14,"#808080"],[7,14,"#a0a0a0"],[8,14,"#a0a0a0"],[9,14,"#a0a0a0"],[10,14,"#800080"],[11,14,"#800080"],[12,14,"#a040a0"],[13,14,"#800080"],[14,14,"#800080"],[15,14,"#a0a0a0"],[16,14,"#a0a0a0"],[17,14,"#a0a0a0"],[18,14,"#a0a0a0"],[19,14,"#808080"],[20,14,"#808080"],[21,14,"#808080"],[1,15,"#800080"],[2,15,"#808080"],[3,15,"#808080"],[4,15,"#ff6020"],[5,15,"#ff6020"],[6,15,"#c06020"],[7,15,"#808080"],[8,15,"#808080"],[9,15,"#808080"],[10,15,"#808080"],[11,15,"#800080"],[12,15,"#800080"],[13,15,"#800080"],[14,15,"#a0a0a0"],[15,15,"#808080"],[16,15,"#808080"],[17,15,"#808080"],[18,15,"#808080"],[19,15,"#ff6020"],[20,15,"#c06020"],[21,15,"#ff6020"],[0,16,"#800080"],[1,16,"#800080"],[2,16,"#a0a0a0"],[3,16,"#a0a0a0"],[4,16,"#a0a0a0"],[5,16,"#a0a0a0"],[6,16,"#a0a0a0"],[7,16,"#00ff00"],[8,16,"#00ff00"],[10,16,"#c0c0c0"],[11,16,"#c0c0c0"],[12,16,"#800080"],[13,16,"#00ff00"],[14,16,"#c0c0c0"],[15,16,"#c0c0c0"],[16,16,"#00ff00"],[17,16,"#00ff00"],[18,16,"#00ff00"],[19,16,"#a0a0a0"],[20,16,"#a0a0a0"],[21,16,"#a0a0a0"]];
+const GW=22, GH=17;
+
+// ── Easing ─────────────────────────────────────────────────────────────────
+function eio(t){ return t<0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2; }
+function eo(t){ return 1-Math.pow(1-t,3); }
+
+// ── Canvas setup ───────────────────────────────────────────────────────────
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+
+function drawSpr(pix, ox, oy, flip, W){
+  for(const [c,r,col] of pix){
+    ctx.fillStyle = col;
+    const dc = flip ? (W-1-c) : c;
+    ctx.fillRect(Math.round(ox + dc*PX), Math.round(oy + r*PX), PX, PX);
+  }
+}
+
+function drawWeb(ax, ay, bx, by){
+  ctx.save();
+  ctx.globalAlpha = 0.92;
+  ctx.strokeStyle = "#cccccc";
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(ax, ay);
+  const mx = (ax+bx)/2, my = (ay+by)/2;
+  const dx = bx-ax, dy = by-ay;
+  const len = Math.sqrt(dx*dx + dy*dy);
+  const sag = Math.min(len*0.18, 20);
+  ctx.quadraticCurveTo(mx, my+sag, bx, by);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawGrid(){
+  ctx.fillStyle = "#0d1117"; ctx.fillRect(0, 0, CVW, CVH);
+  ctx.fillStyle = "#768390"; ctx.font = "10px monospace";
+  const M = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  for(let i=0; i<12; i++) ctx.fillText(M[i], GRID_X + Math.round(i*(COLS/12))*STEP, GRID_Y-10);
+  ctx.font = "9px monospace";
+  const D = ["","Mon","","Wed","","Fri",""];
+  for(let d=0; d<ROWS; d++) if(D[d]) ctx.fillText(D[d], 4, GRID_Y + d*STEP + CELL - 2);
+  for(let w=0; w<COLS; w++) for(let d=0; d<ROWS; d++){
+    ctx.fillStyle = cellColor(GRID[w][d]);
+    ctx.beginPath();
+    ctx.roundRect(GRID_X + w*STEP, GRID_Y + d*STEP, CELL, CELL, 6);
+    ctx.fill();
+  }
+}
+
+// ── Goblin bounds ──────────────────────────────────────────────────────────
+const GOBLIN_Y_TOP = GRID_Y - GH*PX*0.5 + 2;
+const GOBLIN_Y_BOT = GRID_Y + (ROWS-1)*STEP - GH*PX*0.5 + CELL - 2;
+const GOBLIN_Y_MID = (GOBLIN_Y_TOP + GOBLIN_Y_BOT) / 2;
+const GOBLIN_Y_AMP = (GOBLIN_Y_BOT - GOBLIN_Y_TOP) / 4;
+const GOBLIN_ZIG_SPEED = (2*Math.PI) / 180;
+let gZigT = 0;
+
+// ── Build waypoints ───────────────────────────────────────────────────────
+function buildPath(fromLeft){
+  const NUM = 11;
+  const path = [];
+  for(let i=0; i<NUM; i++){
+    const t = i/(NUM-1);
+    let col = Math.round(fromLeft ? 3+t*(COLS-7) : (COLS-4)-t*(COLS-7));
+    col = Math.max(2, Math.min(COLS-3, col));
+    for(let off=0; off<6; off++){
+      if(isGreen(col, findBot(col))) break;
+      if(isGreen(col+off, findBot(col+off))){ col = col+off; break; }
+      if(isGreen(col-off, findBot(col-off))){ col = col-off; break; }
+    }
+    path.push(col);
+  }
+  return path;
+}
+
+// ── Timing: FAST goblin, ORIGINAL spiderman + 2-3s extra ──────────────────
+const FPS = 60;
+const G_HOP = 0.55 * FPS;
+const G_EXIT = 0.5 * FPS;
+const SP_ENTER_DUR = 3.0 * FPS;
+const SP_SWING_DUR = 3.5 * FPS;
+const SP_HANG_DUR = 2.0 * FPS;  // was 2.8 — now ~5s for longer appearance
+const SP_EXIT_DUR = 5.0 * FPS;
+
+// ── State ─────────────────────────────────────────────────────────────────
+let phase = "INIT", timer = 0;
+let gPath = [], gStop = 0, gFlip = false, gFromLeft = true;
+let gX = 0, gY = 0, gFromX = 0, gToX = 0;
+let spX = 0, spY = 0, spFlip = false;
+let spFromX = 0, spFromY = 0, spToX = 0, spToY = 0;
+let spWebAX = 0, spWebAY = 0;
+let spHCol = 0, spHRow = 0;
+let spStop = 0;
+let spHangT = 0;
+let waitT = 0;
+
+// ── Find nearest green cell for web anchor ────────────────────────────────
+function findNearestGreenCol(x) {
+  let col = Math.round((x - GRID_X) / STEP);
+  col = Math.max(0, Math.min(COLS-1, col));
+  if (isGreen(col, findBot(col))) return col;
+  for (let off = 1; off < COLS; off++) {
+    if (col + off < COLS && isGreen(col + off, findBot(col + off))) return col + off;
+    if (col - off >= 0 && isGreen(col - off, findBot(col - off))) return col - off;
+  }
+  return col;
+}
+
+function getWebAnchorFromCol(col) {
+  const topRow = findTop(col);
+  return { x: cx(col), y: cty(topRow) + 2 };
+}
+
+function goblinXForCol(col){ return cx(col) - GW*PX*0.5; }
+
+function initGoblin(){
+  phase = "GOBLIN"; timer = 0; gStop = 0; gZigT = 0;
+  gFromLeft = Math.random() < 0.5;
+  gFlip = !gFromLeft;
+  gPath = buildPath(gFromLeft);
+  gY = GOBLIN_Y_MID;
+  gX = gFromLeft ? (-GW*PX - 10) : (CVW + 10);
+  gFromX = gX;
+  gToX = goblinXForCol(gPath[0]);
+}
+
+function spiderEnter(){
+  phase = "SP_ENTER"; timer = 0;
+  spFlip = !gFromLeft;
+  spStop = 1;
+  spHCol = gPath[0];
+  spHRow = findBot(spHCol);
+  spFromX = gFromLeft ? (-SWW*PX - 10) : (CVW + SWW*PX + 10);
+  spFromY = GRID_Y - 10;
+  spToX = cx(spHCol) - HW*PX*0.5;
+  spToY = cy(spHRow) - HH*PX*0.5;
+  const anchor = getWebAnchorFromCol(spHCol);
+  spWebAX = anchor.x;
+  spWebAY = anchor.y;
+}
+
+function spiderHang(){
+  phase = "SP_HANG"; timer = 0;
+  spX = cx(spHCol) - HW*PX*0.5;
+  spY = cy(spHRow) - HH*PX*0.5;
+  const anchor = getWebAnchorFromCol(spHCol);
+  spWebAX = anchor.x;
+  spWebAY = anchor.y;
+}
+
+function spiderSwing(){
+  phase = "SP_SWING"; timer = 0;
+  const prevCol = spHCol;
+  let goLeft = Math.random() < 0.5;
+  let off = 18 + Math.floor(Math.random() * 25);
+  let nc = prevCol + (goLeft ? -off : off);
+
+  if (prevCol <= 8) { goLeft = false; nc = prevCol + off; }
+  else if (prevCol >= COLS - 9) { goLeft = true; nc = prevCol - off; }
+
+  nc = Math.max(5, Math.min(COLS - 6, nc));
+  spHCol = nc;
+  spHRow = findBot(spHCol);
+  spFlip = spHCol < prevCol;
+  spFromX = spX; spFromY = spY;
+  spToX = cx(spHCol) - HW*PX*0.5;
+  spToY = cy(spHRow) - HH*PX*0.5;
+  const mC = Math.max(0, Math.min(COLS-1, Math.round((prevCol + spHCol)/2)));
+  const anchor = getWebAnchorFromCol(mC);
+  spWebAX = anchor.x;
+  spWebAY = anchor.y;
+}
+
+function spiderExit(){
+  phase = "SP_EXIT"; timer = 0;
+  spFromX = spX; spFromY = spY;
+  // Pick exit direction
+  const exitLeft = Math.random() < 0.5;
+  // Swing far off-screen in that direction
+  spToX = exitLeft ? (-SWW*PX - 120) : (CVW + SWW*PX + 120);
+  spToY = GRID_Y - 100;
+  // Web anchor: placed OUTSIDE the grid in the exit direction, above and visible
+  // This looks like he shot web to a point outside the square array
+  if (exitLeft) {
+    spWebAX = GRID_X - 40;      // left of first column
+    spWebAY = GRID_Y - 60;      // above the grid
+  } else {
+    spWebAX = GRID_X + COLS*STEP + 40;  // right of last column
+    spWebAY = GRID_Y - 60;      // above the grid
+  }
+  // Face the exit direction
+  // spFlip=false = unflipped = faces LEFT
+  // spFlip=true = flipped = faces RIGHT
+  spFlip = !exitLeft;
+}
+
+// ── Main loop ─────────────────────────────────────────────────────────────
+let raf;
+function tick(){
+  drawGrid();
+  timer++;
+
+  if(phase === "INIT"){
+    initGoblin();
+  }
+
+  else if(phase === "GOBLIN"){
+    const p = Math.min(timer / G_HOP, 1);
+    gX = gFromX + (gToX - gFromX) * eio(p);
+    gZigT++;
+    gY = GOBLIN_Y_MID + Math.sin(gZigT * GOBLIN_ZIG_SPEED) * GOBLIN_Y_AMP;
+    drawSpr(SPR_GOBLIN, gX, gY, gFlip, GW);
+    if(p >= 1){
+      gStop++;
+      if(gStop < gPath.length){
+        gFromX = gX;
+        gToX = goblinXForCol(gPath[gStop]);
+        timer = 0;
+      } else {
+        phase = "GOBLIN_EXIT"; timer = 0;
+        gFromX = gX;
+        gToX = gFromLeft ? (CVW + GW*PX + 20) : (-GW*PX - 20);
+      }
+    }
+  }
+
+  else if(phase === "GOBLIN_EXIT"){
+    const p = Math.min(timer / G_EXIT, 1);
+    gX = gFromX + (gToX - gFromX) * eio(p);
+    gZigT++;
+    gY = GOBLIN_Y_MID + Math.sin(gZigT * GOBLIN_ZIG_SPEED) * GOBLIN_Y_AMP;
+    drawSpr(SPR_GOBLIN, gX, gY, gFlip, GW);
+    if(p >= 1) spiderEnter();
+  }
+
+  else if(phase === "SP_ENTER"){
+    const p = Math.min(timer / SP_ENTER_DUR, 1);
+    const ep = eio(p);
+    spX = spFromX + (spToX - spFromX) * ep;
+    spY = spFromY + (spToY - spFromY) * ep - Math.sin(p * Math.PI) * 60;
+    drawWeb(spWebAX, spWebAY, spFlip ? spX + 2*PX : spX + (SWW-3)*PX, spY + 3*PX);
+    drawSpr(SPR_SWING, spX, spY, spFlip, SWW);
+    if(p >= 1) spiderHang();
+  }
+
+  else if(phase === "SP_HANG"){
+    const sway = Math.sin(timer * 0.06) * 12;
+    const bob = Math.sin(timer * 0.04) * 3;
+    const curX = spX + sway, curY = spY + bob;
+    drawWeb(spWebAX, spWebAY, curX + HW*PX*0.5, curY + HH*PX*0.5);
+    drawSpr(SPR_HANG, curX, curY, sway < -2, HW);
+    if(timer >= SP_HANG_DUR){
+      spStop++;
+      if(spStop >= 10) spiderExit();
+      else spiderSwing();
+    }
+  }
+
+  else if(phase === "SP_SWING"){
+    const p = Math.min(timer / SP_SWING_DUR, 1);
+    const ep = eio(p);
+    spX = spFromX + (spToX - spFromX) * ep;
+    const arc = Math.sin(p * Math.PI) * 50 + Math.sin(p * Math.PI * 2) * 8;
+    spY = spFromY + (spToY - spFromY) * ep - arc;
+    drawWeb(spWebAX, spWebAY, spFlip ? spX + 2*PX : spX + (SWW-3)*PX, spY + 4*PX);
+    drawSpr(SPR_SWING, spX, spY, spFlip, SWW);
+    if(p >= 1) spiderHang();
+  }
+
+  else if(phase === "SP_EXIT"){
+    const p = Math.min(timer / SP_EXIT_DUR, 1);
+    const ep = eo(p);
+    spX = spFromX + (spToX - spFromX) * ep;
+    spY = spFromY + (spToY - spFromY) * ep - Math.sin(p * Math.PI) * 80;
+    // Thick visible web going from his hand to outside the grid
+    ctx.save();
+    ctx.globalAlpha = 0.9;
+    ctx.strokeStyle = "#dddddd";
+    ctx.lineWidth = 2.0;
+    ctx.beginPath();
+    ctx.moveTo(spWebAX, spWebAY);
+    const handX = spFlip ? spX + 2*PX : spX + (SWW-3)*PX;
+    const handY = spY + 3*PX;
+    const mx = (spWebAX + handX) / 2;
+    const my = (spWebAY + handY) / 2;
+    ctx.quadraticCurveTo(mx, my + 10, handX, handY);
+    ctx.stroke();
+    ctx.restore();
+    drawSpr(SPR_SWING, spX, spY, spFlip, SWW);
+    if(p >= 1){ phase = "WAIT"; waitT = 2.5 * FPS; timer = 0; }
+  }
+
+  else if(phase === "WAIT"){
+    waitT--;
+    if(waitT <= 0) initGoblin();
+  }
+
+  raf = requestAnimationFrame(tick);
+}
+
+drawGrid();
+raf = requestAnimationFrame(tick);
+</script>
+</body>
+</html>
