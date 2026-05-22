@@ -12,20 +12,33 @@
 
 ## 📌 Featured Projects
 
-<div align="center">
-
-<a href="https://github.com/4-thkind/GenAI-ET-hackathon">
-  <img src="https://github-readme-stats.vercel.app/api/pin/?username=4-thkind&repo=GenAI-ET-hackathon&theme=dark&bg_color=0d1117&border_color=30363d&title_color=00cdcd&icon_color=00cdcd&text_color=cdd9e5" />
-</a>
-<a href="https://github.com/4-thkind/Movie-Recommendation-Model">
-  <img src="https://github-readme-stats.vercel.app/api/pin/?username=4-thkind&repo=Movie-Recommendation-Model&theme=dark&bg_color=0d1117&border_color=30363d&title_color=00cdcd&icon_color=00cdcd&text_color=cdd9e5" />
-</a>
-
-<a href="https://github.com/4-thkind/Careflow">
-  <img src="https://github-readme-stats.vercel.app/api/pin/?username=4-thkind&repo=Careflow&theme=dark&bg_color=0d1117&border_color=30363d&title_color=00cdcd&icon_color=00cdcd&text_color=cdd9e5" />
-</a>
-<a href="https://github.com/4-thkind/MyNewsApp">
-  <img src="https://github-readme-stats.vercel.app/api/pin/?username=4-thkind&repo=MyNewsApp&theme=dark&bg_color=0d1117&border_color=30363d&title_color=00cdcd&icon_color=00cdcd&text_color=cdd9e5" />
-</a>
-
-</div>
+<table width="100%">
+  <tr>
+    <td width="50%" align="center" bgcolor="#ffb6c1" style="padding:24px;">
+      <a href="https://github.com/4-thkind/GenAI-ET-hackathon">
+        <img src="https://img.shields.io/badge/GitHub-GenAI--ET--hackathon-black?style=for-the-badge&logo=github"/><br/><br/>
+        <b>GenAI-ET-hackathon</b>
+      </a>
+    </td>
+    <td width="50%" align="center" bgcolor="#ffb6c1" style="padding:24px;">
+      <a href="https://github.com/4-thkind/Movie-Recommendation-Model">
+        <img src="https://img.shields.io/badge/GitHub-Movie--Recommendation--Model-black?style=for-the-badge&logo=github"/><br/><br/>
+        <b>Movie-Recommendation-Model</b>
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center" bgcolor="#ffb6c1" style="padding:24px;">
+      <a href="https://github.com/4-thkind/Careflow">
+        <img src="https://img.shields.io/badge/GitHub-Careflow-black?style=for-the-badge&logo=github"/><br/><br/>
+        <b>Careflow</b>
+      </a>
+    </td>
+    <td width="50%" align="center" bgcolor="#ffb6c1" style="padding:24px;">
+      <a href="https://github.com/4-thkind/MyNewsApp">
+        <img src="https://img.shields.io/badge/GitHub-MyNewsApp-black?style=for-the-badge&logo=github"/><br/><br/>
+        <b>MyNewsApp</b>
+      </a>
+    </td>
+  </tr>
+</table>
