@@ -439,7 +439,7 @@ function tick(){
     ctx.stroke();
     ctx.restore();
     drawSpr(SPR_SWING, spX, spY, spFlip, SWW);
-    if(p >= 1){ phase = "WAIT"; waitT = 2.5 * FPS; timer = 0; }
+    if(p >= 1){ phase = "WAIT"; waitT = 6.0 * FPS; timer = 0; }
   }
 
   else if(phase === "WAIT"){
