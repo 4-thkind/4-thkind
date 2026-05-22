@@ -71,20 +71,12 @@ async function main() {
 
   let html = fs.readFileSync('scripts/animation.html', 'utf8');
 
-  // Replace the entire grid generation block (from the comment line through generateGrid() call)
-  // with real GitHub data injected directly into ORIGINAL_GRID and GRID
   const realGridCode = `// ── REAL GitHub contribution data (injected by CI) ──────────────────────
 const REAL_GRID = ${JSON.stringify(grid)};
-const ORIGINAL_GRID = REAL_GRID.map(col => [...col]);
-const GRID = REAL_GRID.map(col => [...col]);
+const GRID = REAL_GRID.map(col => [...col]);`;
 
-function generateGrid() {
-  // no-op: real data already loaded above
-}
-generateGrid();`;
-
-  // Match from the grid generation comment through the generateGrid() call
-  const oldPattern = /\/\/ ── Grid generation[^\n]*\n[\s\S]*?generateGrid\(\);/;
+  // Matches the old single-line grid generation block in animation.html
+  const oldPattern = /let s=42;[\s\S]*?GRID\[w\]\.push\(W\[Math\.floor\(rng\(\)\*W\.length\)\]\); \}/;
 
   if (!oldPattern.test(html)) {
     console.error('❌ Pattern not found in HTML! Check animation.html structure.');
