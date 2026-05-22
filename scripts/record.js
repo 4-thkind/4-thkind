@@ -22,7 +22,7 @@ const FRAMES   = FPS * DURATION;
 async function main() {
   console.log('Launching browser...');
   const browser = await puppeteer.launch({
-    headless: 'new',
+    headless: 'new', executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
