@@ -10,54 +10,30 @@
 
 <br/>
 
-## 📌 Featured Projects
+## Top Projects
 
-<table width="100%" cellspacing="10" cellpadding="0" border="0">
+<table width="100%" cellspacing="0" cellpadding="0" border="0">
   <tr>
-    <td width="50%" style="padding:8px;">
-      <a href="https://github.com/4-thkind/GenAI-ET-hackathon" style="text-decoration:none;">
-        <table width="100%" style="background:#ffb6c1; border-radius:12px; padding:20px;">
-          <tr><td align="center">
-            <b style="font-size:16px;">⚡ GenAI-ET-hackathon</b><br/><br/>
-            <i>An autonomous multi-agent system that takes ownership of complex, multi-step enterprise code review and remediation processes</i><br/><br/>
-            <img src="https://img.shields.io/badge/View%20Repo-GitHub-black?style=flat-square&logo=github"/>
-          </td></tr>
-        </table>
+    <td width="50%" align="center" style="padding:8px;">
+      <a href="https://github.com/4-thkind/GenAI-ET-hackathon">
+        <img src="https://img.shields.io/badge/⚡%20GenAI--ET--hackathon-Autonomous%20multi--agent%20code%20review%20%26%20remediation...-000?style=for-the-badge&labelColor=ffb6c1&color=ffb6c1&logoColor=black" width="100%"/>
       </a>
     </td>
-    <td width="50%" style="padding:8px;">
-      <a href="https://github.com/4-thkind/Movie-Recommendation-Model" style="text-decoration:none;">
-        <table width="100%" style="background:#ffb6c1; border-radius:12px; padding:20px;">
-          <tr><td align="center">
-            <b style="font-size:16px;">🎬 Movie-Recommendation-Model</b><br/><br/>
-            <i>Replace old school methods to Get recommendation; try MRM</i><br/><br/>
-            <img src="https://img.shields.io/badge/View%20Repo-GitHub-black?style=flat-square&logo=github"/>
-          </td></tr>
-        </table>
+    <td width="50%" align="center" style="padding:8px;">
+      <a href="https://github.com/4-thkind/Movie-Recommendation-Model">
+        <img src="https://img.shields.io/badge/🎬%20Movie--Recommendation--Model-Replace%20old%20school%20methods%2C%20try%20MRM...-000?style=for-the-badge&labelColor=ffb6c1&color=ffb6c1&logoColor=black" width="100%"/>
       </a>
     </td>
   </tr>
   <tr>
-    <td width="50%" style="padding:8px;">
-      <a href="https://github.com/4-thkind/Careflow" style="text-decoration:none;">
-        <table width="100%" style="background:#ffb6c1; border-radius:12px; padding:20px;">
-          <tr><td align="center">
-            <b style="font-size:16px;">💪 Careflow</b><br/><br/>
-            <i>An app that Tracks your fitness along with life style</i><br/><br/>
-            <img src="https://img.shields.io/badge/View%20Repo-GitHub-black?style=flat-square&logo=github"/>
-          </td></tr>
-        </table>
+    <td width="50%" align="center" style="padding:8px;">
+      <a href="https://github.com/4-thkind/Careflow">
+        <img src="https://img.shields.io/badge/💪%20Careflow-Tracks%20your%20fitness%20along%20with%20lifestyle...-000?style=for-the-badge&labelColor=ffb6c1&color=ffb6c1&logoColor=black" width="100%"/>
       </a>
     </td>
-    <td width="50%" style="padding:8px;">
-      <a href="https://github.com/4-thkind/MyNewsApp" style="text-decoration:none;">
-        <table width="100%" style="background:#ffb6c1; border-radius:12px; padding:20px;">
-          <tr><td align="center">
-            <b style="font-size:16px;">📰 MyNewsApp</b><br/><br/>
-            <i>Catch News Flying Around You</i><br/><br/>
-            <img src="https://img.shields.io/badge/View%20Repo-GitHub-black?style=flat-square&logo=github"/>
-          </td></tr>
-        </table>
+    <td width="50%" align="center" style="padding:8px;">
+      <a href="https://github.com/4-thkind/MyNewsApp">
+        <img src="https://img.shields.io/badge/📰%20MyNewsApp-Catch%20News%20Flying%20Around%20You...-000?style=for-the-badge&labelColor=ffb6c1&color=ffb6c1&logoColor=black" width="100%"/>
       </a>
     </td>
   </tr>
