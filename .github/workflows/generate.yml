@@ -58,9 +58,9 @@ jobs:
         run: |
           before=$(stat -c%s spiderman.gif)
           ffmpeg -v error -y -i spiderman.gif \
-            -vf "palettegen=max_colors=32:stats_mode=diff" /tmp/pal.png
+            -vf "scale=966:-1:flags=neighbor,palettegen=max_colors=24:stats_mode=diff" /tmp/pal.png
           ffmpeg -v error -y -i spiderman.gif -i /tmp/pal.png \
-            -lavfi "paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle:new=0" /tmp/opt.gif
+            -lavfi "scale=966:-1:flags=neighbor[s];[s][1:v]paletteuse=dither=none:diff_mode=rectangle:new=0" /tmp/opt.gif
           after=$(stat -c%s /tmp/opt.gif 2>/dev/null || echo 0)
           # keep the original unless the optimized file is valid AND smaller
           if [ "$after" -gt 100000 ] && [ "$after" -lt "$before" ]; then
