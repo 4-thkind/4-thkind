@@ -58,7 +58,7 @@ jobs:
         run: |
           before=$(stat -c%s spiderman.gif)
           ffmpeg -v error -y -i spiderman.gif \
-            -vf "palettegen=max_colors=48:stats_mode=diff" /tmp/pal.png
+            -vf "palettegen=max_colors=32:stats_mode=diff" /tmp/pal.png
           ffmpeg -v error -y -i spiderman.gif -i /tmp/pal.png \
             -lavfi "paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle:new=0" /tmp/opt.gif
           after=$(stat -c%s /tmp/opt.gif 2>/dev/null || echo 0)

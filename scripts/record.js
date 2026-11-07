@@ -11,7 +11,7 @@ const HTML_FILE = path.resolve('scripts/animation_injected.html');
 const OUTPUT    = 'spiderman.gif';
 const WIDTH  = 1288;
 const HEIGHT = 282;
-const FPS    = 20;
+const FPS    = 12.5;
 const FRAME_DELAY = Math.round(1000 / FPS);
 async function main() {
   console.log('Launching browser...');
