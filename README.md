@@ -5,7 +5,7 @@
 <br/>
 
 <div align="center">
-  <img src="Utkarsh_banner.jpg" width="100%" alt="Utkarsh Singh"/>
+  <img src="./Utkarsh_banner.svg" width="100%" alt="Utkarsh Singh - info"/>
 </div>
 
 
