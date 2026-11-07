@@ -54,6 +54,22 @@ jobs:
           PUPPETEER_EXECUTABLE_PATH: "/usr/bin/chromium-browser"
         run: node scripts/record.js
 
+      - name: Optimize GIF (palette + frame diffing)
+        run: |
+          before=$(stat -c%s spiderman.gif)
+          ffmpeg -v error -y -i spiderman.gif \
+            -vf "palettegen=max_colors=48:stats_mode=diff" /tmp/pal.png
+          ffmpeg -v error -y -i spiderman.gif -i /tmp/pal.png \
+            -lavfi "paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle:new=0" /tmp/opt.gif
+          after=$(stat -c%s /tmp/opt.gif 2>/dev/null || echo 0)
+          # keep the original unless the optimized file is valid AND smaller
+          if [ "$after" -gt 100000 ] && [ "$after" -lt "$before" ]; then
+            mv /tmp/opt.gif spiderman.gif
+            echo "optimized: $before -> $after bytes"
+          else
+            echo "optimization skipped ($before -> $after bytes)"
+          fi
+
       - name: Commit and push GIF
         run: |
           git config user.name  "github-actions[bot]"

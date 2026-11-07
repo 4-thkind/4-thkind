@@ -24,14 +24,14 @@ async function main() {
   // Wide enough so canvas renders at full 1288px without scaling
   await page.setViewport({ width: 1500, height: 500 });
   await page.goto(`file://${HTML_FILE}`, { waitUntil: 'networkidle0' });
-  // Patch the page to signal when 4 full cycles complete (WAIT phase ends)
+  // Patch the page to signal when ONE full cycle completes (WAIT phase ends)
   await page.evaluate(() => {
     window._cycleComplete = false;
     const orig = window.initGoblin;
     let callCount = 0;
     window.initGoblin = function() {
       callCount++;
-      if (callCount > 4) {
+      if (callCount > 1) {
         window._cycleComplete = true;
       }
       orig.apply(this, arguments);
@@ -51,7 +51,7 @@ async function main() {
   const { Image } = require('canvas');
   let frameCount = 0;
   const MAX_FRAMES = FPS * 300; // 5 min safety cap
-  console.log('Recording until 4 full cycles complete...');
+  console.log('Recording until 1 full cycle completes...');
   while (frameCount < MAX_FRAMES) {
     const element = await page.$('canvas#c');
     const buf = await element.screenshot({ type: 'png' });
@@ -67,7 +67,7 @@ async function main() {
     // Stop when cycle complete — but only after at least 10s so we don't stop too early
     const done = await page.evaluate(() => window._cycleComplete);
     if (done && frameCount > FPS * 10) {
-      console.log(`✅ 4 cycles complete at frame ${frameCount} (~${Math.round(frameCount/FPS)}s)`);
+      console.log(`✅ 1 cycle complete at frame ${frameCount} (~${Math.round(frameCount/FPS)}s)`);
       break;
     }
     await new Promise(r => setTimeout(r, FRAME_DELAY));
