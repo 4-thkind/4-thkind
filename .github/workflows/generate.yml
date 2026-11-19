@@ -2,7 +2,7 @@ name: 🕷️ Generate Spiderman GIF
 
 on:
   schedule:
-    - cron: "0 1 * * *"
+    - cron: "30 8,20 * * *"  # 2:00 PM and 2:00 AM IST (cron is UTC)
   workflow_dispatch:
   push:
     branches: [main]
